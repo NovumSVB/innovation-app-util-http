@@ -1,0 +1,25 @@
+{
+    "name": "hurah/innovation-app-util-http",
+    "description": "Generates webserver configuration files during the installation of api's or sites.",
+    "type": "composer-plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Anton Boutkam",
+            "email": "anton@nui-boutkam.nl"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Provider\\" : "Provider"
+        }
+    },
+    "require": {
+        "composer-plugin-api": "^1.1",
+        "composer/composer": "^2.0@dev"
+    },
+    "extra": {
+        "class": "Provider\\Plugin"
+    },
+    "minimum-stability": "dev"
+}
