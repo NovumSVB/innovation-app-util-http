@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "23407dc09cf139153b81b4acdb7e84e8",
+    "content-hash": "e7c847deed54a49654dc07a1f1ff8499",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -374,6 +374,45 @@
             "time": "2020-08-19T10:27:58+00:00"
         },
         {
+            "name": "hurah/hurah-installer",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/antonboutkam/hurah-installer.git",
+                "reference": "161136840dcd0ebd8fbb86b0b5fdc8e54f454167"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/antonboutkam/hurah-installer/zipball/161136840dcd0ebd8fbb86b0b5fdc8e54f454167",
+                "reference": "161136840dcd0ebd8fbb86b0b5fdc8e54f454167",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.0",
+                "composer/composer": "^1.3",
+                "ext-json": "*",
+                "ext-mysqli": "*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.3@dev"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Hi\\Plugin"
+            },
+            "autoload": {
+                "psr-4": {
+                    "Hi\\": "src/Hi"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Installer scripts for Hurah!",
+            "time": "2020-08-21T00:16:42+00:00"
+        },
+        {
             "name": "justinrainbow/json-schema",
             "version": "5.x-dev",
             "source": {
@@ -644,12 +683,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "5bc9d8e93f5a3746fdd9d774ad214e502cbb0f8a"
+                "reference": "7ef79f3fcbac344e437de1caab83cd4f3ad3cf08"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/5bc9d8e93f5a3746fdd9d774ad214e502cbb0f8a",
-                "reference": "5bc9d8e93f5a3746fdd9d774ad214e502cbb0f8a",
+                "url": "https://api.github.com/repos/symfony/console/zipball/7ef79f3fcbac344e437de1caab83cd4f3ad3cf08",
+                "reference": "7ef79f3fcbac344e437de1caab83cd4f3ad3cf08",
                 "shasum": ""
             },
             "require": {
@@ -735,7 +774,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-08-18T05:52:09+00:00"
+            "time": "2020-08-31T15:31:17+00:00"
         },
         {
             "name": "symfony/filesystem",
@@ -1561,11 +1600,15 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "hurah/hurah-installer": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "composer-plugin-api": "^1.1"
+        "composer-plugin-api": "^1.1",
+        "ext-json": "*",
+        "php": ">=7.3"
     },
     "platform-dev": [],
     "plugin-api-version": "1.1.0"
