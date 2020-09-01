@@ -46,6 +46,10 @@ class Configuration
 
     function getVhostDir():string
     {
+        if(!is_dir($this->vhostDir))
+        {
+            mkdir($this->vhostDir, 0777, true);
+        }
         return $this->vhostDir;
     }
 
