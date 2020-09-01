@@ -68,21 +68,14 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 $oCreator->createAll();
             }
         }
-
-        // $sPackageName  = $event->getArguments()
-
-
     }
 
-    public function postPackageupdate(PackageEvent $event)
+    public function postUpdate(PackageEvent $event)
     {
-        print_r($event->getArguments());
-        // $sPackageName  = $event->getComposer()->getPackage()->getName();
-
         $console = new Console($event->getIO());
         $console->log("Running post package update " . $event->getComposer()->getPackage()->getName(), self::$installerName);
 
-
+        $this->postInstall($event);
     }
 
 
