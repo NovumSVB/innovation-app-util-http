@@ -82,12 +82,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "b847c4dc3a7bee6c47ed2d2f62de263077e0ab80"
+                "reference": "960413da3afa97244ff62cc9b94c50dab83413d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/b847c4dc3a7bee6c47ed2d2f62de263077e0ab80",
-                "reference": "b847c4dc3a7bee6c47ed2d2f62de263077e0ab80",
+                "url": "https://api.github.com/repos/composer/composer/zipball/960413da3afa97244ff62cc9b94c50dab83413d5",
+                "reference": "960413da3afa97244ff62cc9b94c50dab83413d5",
                 "shasum": ""
             },
             "require": {
@@ -168,7 +168,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-08-25T06:58:43+00:00"
+            "time": "2020-09-04T10:17:43+00:00"
         },
         {
             "name": "composer/semver",
@@ -379,12 +379,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/antonboutkam/hurah-installer.git",
-                "reference": "161136840dcd0ebd8fbb86b0b5fdc8e54f454167"
+                "reference": "d791a917d59cb17c405875c2fbd7647fb30475b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/antonboutkam/hurah-installer/zipball/161136840dcd0ebd8fbb86b0b5fdc8e54f454167",
-                "reference": "161136840dcd0ebd8fbb86b0b5fdc8e54f454167",
+                "url": "https://api.github.com/repos/antonboutkam/hurah-installer/zipball/d791a917d59cb17c405875c2fbd7647fb30475b1",
+                "reference": "d791a917d59cb17c405875c2fbd7647fb30475b1",
                 "shasum": ""
             },
             "require": {
@@ -410,7 +410,7 @@
                 "MIT"
             ],
             "description": "Installer scripts for Hurah!",
-            "time": "2020-08-21T00:16:42+00:00"
+            "time": "2020-09-01T11:29:24+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -683,12 +683,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "7ef79f3fcbac344e437de1caab83cd4f3ad3cf08"
+                "reference": "a729c1d1f122a0f3a356f0882400d63cb44c9d5c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/7ef79f3fcbac344e437de1caab83cd4f3ad3cf08",
-                "reference": "7ef79f3fcbac344e437de1caab83cd4f3ad3cf08",
+                "url": "https://api.github.com/repos/symfony/console/zipball/a729c1d1f122a0f3a356f0882400d63cb44c9d5c",
+                "reference": "a729c1d1f122a0f3a356f0882400d63cb44c9d5c",
                 "shasum": ""
             },
             "require": {
@@ -774,7 +774,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-08-31T15:31:17+00:00"
+            "time": "2020-09-02T16:27:44+00:00"
         },
         {
             "name": "symfony/filesystem",
@@ -782,12 +782,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "9f64b03ee93d7cf7426f7f417e6292361235e5b4"
+                "reference": "73a3c793782c75dce5a2e7e0c533e9199564a7b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/9f64b03ee93d7cf7426f7f417e6292361235e5b4",
-                "reference": "9f64b03ee93d7cf7426f7f417e6292361235e5b4",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/73a3c793782c75dce5a2e7e0c533e9199564a7b3",
+                "reference": "73a3c793782c75dce5a2e7e0c533e9199564a7b3",
                 "shasum": ""
             },
             "require": {
@@ -838,7 +838,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-08-21T17:20:41+00:00"
+            "time": "2020-09-02T16:27:44+00:00"
         },
         {
             "name": "symfony/finder",
@@ -846,12 +846,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "1350257c170eed7d2a2f27e43f2fbf9c5179e741"
+                "reference": "b5f7c0d069d8517c994f1dc0e9c100257d7effd9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/1350257c170eed7d2a2f27e43f2fbf9c5179e741",
-                "reference": "1350257c170eed7d2a2f27e43f2fbf9c5179e741",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/b5f7c0d069d8517c994f1dc0e9c100257d7effd9",
+                "reference": "b5f7c0d069d8517c994f1dc0e9c100257d7effd9",
                 "shasum": ""
             },
             "require": {
@@ -901,7 +901,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-08-17T10:01:44+00:00"
+            "time": "2020-09-02T16:27:44+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -1377,12 +1377,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "f4619b7c317b62637c57ff7cf970139a64c0bf90"
+                "reference": "bc88053ef8ad731729a3179d24d2873f3271f062"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/f4619b7c317b62637c57ff7cf970139a64c0bf90",
-                "reference": "f4619b7c317b62637c57ff7cf970139a64c0bf90",
+                "url": "https://api.github.com/repos/symfony/process/zipball/bc88053ef8ad731729a3179d24d2873f3271f062",
+                "reference": "bc88053ef8ad731729a3179d24d2873f3271f062",
                 "shasum": ""
             },
             "require": {
@@ -1433,7 +1433,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-07-23T08:36:44+00:00"
+            "time": "2020-09-02T16:27:44+00:00"
         },
         {
             "name": "symfony/service-contracts",
@@ -1517,12 +1517,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "68e150ace76a1f7476970d3816c97be94366cb03"
+                "reference": "fa00ee8312a56d7deb933b013c52f25d36b1b5a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/68e150ace76a1f7476970d3816c97be94366cb03",
-                "reference": "68e150ace76a1f7476970d3816c97be94366cb03",
+                "url": "https://api.github.com/repos/symfony/string/zipball/fa00ee8312a56d7deb933b013c52f25d36b1b5a1",
+                "reference": "fa00ee8312a56d7deb933b013c52f25d36b1b5a1",
                 "shasum": ""
             },
             "require": {
@@ -1594,7 +1594,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-08-17T08:48:15+00:00"
+            "time": "2020-09-02T16:27:44+00:00"
         }
     ],
     "packages-dev": [],
