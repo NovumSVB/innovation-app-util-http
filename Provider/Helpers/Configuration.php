@@ -72,7 +72,7 @@ class Configuration
      */
     private function getDirectoriesJson():array
     {
-        $sDirectoriesJsonFile = 'hurah/hurah-installer/directory-structure.json';
+        $sDirectoriesJsonFile = './vendor/hurah/hurah-installer/directory-structure.json';
         $sDirectoriesJsonContent = file_get_contents($sDirectoriesJsonFile);
         $aDirectoriesJson = json_decode($sDirectoriesJsonContent, true);
 
