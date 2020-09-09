@@ -53,8 +53,31 @@ class Creator
         $this->console->log("Created $sEnv vHost config: $sDestination", Plugin::$installerName);
     }
 
+    public function createMain()
+    {
+        $sDestination = $this->configuration->getVhostDir() . 'server.conf';
+        $aContents = [
+            '# This configuration file loads the vhost configurations',
+            '# It is auto generated but once generated it will not be overwritten',
+            '# So you can adjust this file to your needs',
+            '',
+            '# Include the dev vhost configurations:',
+            '# IncludeOptional dev/*.conf',
+            '',
+            '# Include the prod vhost host configurations:',
+            'IncludeOptional prod/*.conf',
+            '',
+            '# Include the test vhost configurations:',
+            '# IncludeOptional test/*.conf',
+        ];
+        file_put_contents($sDestination, join(PHP_EOL, $aContents));
+    }
+
+
+    }
     public function createAll()
     {
+        $this->createMain();
         $this->console->log("Managing vHost configs for package {$this->packageName}", Plugin::$installerName);
         foreach ($this->configuration->getSiteSettings()['site'] as $sEnvironment => $aSite)
         {
