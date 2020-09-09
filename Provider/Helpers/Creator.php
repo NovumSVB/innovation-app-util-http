@@ -55,7 +55,7 @@ class Creator
 
     public function createMain()
     {
-        $sDestination = $this->configuration->getVhostDir() . 'server.conf';
+        $sDestination = $this->configuration->getVhostDir() . '/server.conf';
         $aContents = [
             '# This configuration file loads the vhost configurations',
             '# It is auto generated but once generated it will not be overwritten',
