@@ -73,8 +73,6 @@ class Creator
         file_put_contents($sDestination, join(PHP_EOL, $aContents));
     }
 
-
-    }
     public function createAll()
     {
         $this->createMain();
