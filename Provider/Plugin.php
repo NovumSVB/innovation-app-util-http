@@ -24,11 +24,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $this->io = $io;
         $console = new Console($io);
 
-        $console->log("Initializing");
-        //        print_r($composer->getRepositoryManager()->getRepositories());
-
-        $installer = new TemplateInstaller($io, $composer);
-        $composer->getInstallationManager()->addInstaller($installer);
+        $console->log("Initializing http util");
     }
 
     /**
