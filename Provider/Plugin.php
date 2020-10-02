@@ -34,7 +34,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
     public function postInstall(Event $event)
     {
-
         $sPackageName = $event->getComposer()->getPackage()->getName();
         $console = new Console($event->getIO());
         $console->log("Generating vHost configurations " . $sPackageName, self::$installerName);
@@ -44,7 +43,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $oPackageConfig = new Configuration($sPackageName);
 
         Cleaner::removePrevious($oPackageConfig, $console);
-
+        $bHasCandidates = false;
         if(is_array($aRequiredPackages))
         {
             foreach ($aRequiredPackages as $sPackageName => $oPackageProperties)
@@ -60,12 +59,17 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 {
                     continue;
                 }
+                $bHasCandidates = true;
                 $oCreator = new Creator($sPackageName, $console);
                 $oCreator->createAll();
             }
         }
-    }
 
+        if(!$bHasCandidates)
+        {
+            $console->log("Did not create any Vhosts, this may be because no API\'s/Websites have been added yet.");
+        }
+    }
     public function postUpdate(Event $event)
     {
         $console = new Console($event->getIO());
@@ -73,9 +77,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
         $this->postInstall($event);
     }
-
-
-
     public static function getSubscribedEvents()
     {
         return [
