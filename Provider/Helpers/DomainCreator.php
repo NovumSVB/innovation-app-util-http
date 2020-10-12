@@ -23,7 +23,11 @@ class DomainCreator
         $sDestination = $this->configuration->getVhostDir() . '/server.conf';
         $this->console->log($sDestination);
 
-        $sAdminDocumentRoot = $this->configuration->getSystemDir() . DIRECTORY_SEPARATOR . 'admin_public_html';
+        $sAdminDocumentRoot = Directory::getSystemRoot() .
+                                DIRECTORY_SEPARATOR .
+                                $this->configuration->getSystemDir() .
+                                DIRECTORY_SEPARATOR .
+                                'admin_public_html';
 
         $aContents = [
             '# This configuration file loads the vhost configurations',
@@ -41,7 +45,7 @@ class DomainCreator
             '',
             '<VirtualHost *:80>',
             '   ServerAlias admin.*',
-            '   VirtualDocumentRoot /var/www/%1/',
+            '   VirtualDocumentRoot ' . $sAdminDocumentRoot,
             '</VirtualHost>'
         ];
         file_put_contents($sDestination, join(PHP_EOL, $aContents));

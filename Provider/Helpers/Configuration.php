@@ -88,7 +88,7 @@ class Configuration
     public function getDocumentRoot(): string
     {
         $sInstallationDirectory = $this->getComposerJson()['extra']['install_dir'];
-        return $this->getPublicDir() . DIRECTORY_SEPARATOR . $sInstallationDirectory;
+        return Directory::getSystemRoot() . DIRECTORY_SEPARATOR . $this->getPublicDir() . DIRECTORY_SEPARATOR . $sInstallationDirectory;
     }
     public function getLogDir():string
     {

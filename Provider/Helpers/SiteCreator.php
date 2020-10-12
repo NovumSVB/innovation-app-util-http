@@ -39,9 +39,10 @@ class SiteCreator
         $reflection = new \ReflectionClass(\Composer\Autoload\ClassLoader::class);
         $vendorDir = dirname(dirname($reflection->getFileName()));
 
-
-        echo 'FIIIIIIIIIIIILEEEEEEEEEEEEE REALPATH -----> ' . realpath($vendorDir) . PHP_EOL;
-        echo 'FIIIIIIIIIIIILEEEEEEEEEEEEE CWD -----> ' . getcwd() . PHP_EOL;
+        /**
+         * @todo this may not be the best way of doing this.
+         */
+        $sSystemRoot = getcwd();
 
         $sServerAdmin = $aSite['server_admin'] ?? '';
         $sProtocol = $aSite['protocol'];
