@@ -36,7 +36,11 @@ class SiteCreator
         {
             return;
         }
+        $reflection = new \ReflectionClass(\Composer\Autoload\ClassLoader::class);
+        $vendorDir = dirname(dirname($reflection->getFileName()));
 
+        echo 'COMPOOOOOSERFILE 1  -----> ' . \Composer\Factory::getComposerFile() . __FILE__ . PHP_EOL;
+        echo 'COMPOOOOOSERFILE 2  -----> ' . $vendorDir . __FILE__ . PHP_EOL;
         echo 'FIIIIIIIIIIIILEEEEEEEEEEEEE __FILE__ -----> ' . __FILE__ . PHP_EOL;
         echo 'FIIIIIIIIIIIILEEEEEEEEEEEEE REALPATH -----> ' . realpath(__FILE__) . PHP_EOL;
         echo 'FIIIIIIIIIIIILEEEEEEEEEEEEE CWD -----> ' . getcwd() . PHP_EOL;
