@@ -40,9 +40,8 @@ class Configuration
         }
         $sPackageJson = file_get_contents($this->sPackageJsonFile);
         $this->aComposerjson = json_decode($sPackageJson, true);
-
-
     }
+
 
     function getVhostDir():string
     {
@@ -77,6 +76,10 @@ class Configuration
         $aDirectoriesJson = json_decode($sDirectoriesJsonContent, true);
 
         return $aDirectoriesJson;
+    }
+    public function getSystemDir():string
+    {
+        return self::getDirectoriesJson()['system_dir'];
     }
     public function getPublicDir():string
     {

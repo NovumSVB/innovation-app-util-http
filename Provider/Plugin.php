@@ -12,6 +12,9 @@ use Provider\Helpers\Cleaner;
 use Provider\Helpers\Configuration;
 use Provider\Helpers\Console;
 use Provider\Helpers\Creator;
+use Provider\Helpers\DomainCreator;
+use Provider\Helpers\MainCreator;
+use Provider\Helpers\SiteCreator;
 
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
@@ -54,13 +57,17 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 {
                     continue;
                 }
-
+                if(preg_match('/(novum|hurah)-(domain)/', $oPackageConfig->getComposerJson()['type']))
+                {
+                    $oMainCreator = new DomainCreator($sPackageName, $console);
+                    $oMainCreator->create();
+                }
                 if(!preg_match('/(novum|hurah)-(site|api)/', $oPackageConfig->getComposerJson()['type']))
                 {
                     continue;
                 }
                 $bHasCandidates = true;
-                $oCreator = new Creator($sPackageName, $console);
+                $oCreator = new SiteCreator($sPackageName, $console);
                 $oCreator->createAll();
             }
         }
