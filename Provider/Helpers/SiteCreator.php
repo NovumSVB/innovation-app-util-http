@@ -37,6 +37,9 @@ class SiteCreator
             return;
         }
 
+        echo 'FIIIIIIIIIIIILEEEEEEEEEEEEE __FILE__ -----> ' . __FILE__ . PHP_EOL;
+        echo 'FIIIIIIIIIIIILEEEEEEEEEEEEE REALPATH -----> ' . realpath(__FILE__) . PHP_EOL;
+        echo 'FIIIIIIIIIIIILEEEEEEEEEEEEE CWD -----> ' . getcwd() . PHP_EOL;
 
         $sServerAdmin = $aSite['server_admin'] ?? '';
         $sProtocol = $aSite['protocol'];
@@ -55,6 +58,7 @@ class SiteCreator
 
     public function createAll()
     {
+
         $this->console->log("Managing vHost configs for package {$this->packageName}", Plugin::$installerName);
         foreach ($this->configuration->getSiteSettings()['site'] as $sEnvironment => $aSite)
         {
