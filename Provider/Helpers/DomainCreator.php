@@ -57,7 +57,7 @@ class DomainCreator
             "   ServerAdmin webmaster@localhost",
             "   DocumentRoot /app/.system/public_html/docs.demo.novum.nu/public_html",
             "",
-            "   <Directory {$sAdminDocumentRoot}>",
+            "   <Directory /app/.system/public_html/docs.demo.novum.nu>",
             "       AllowOverride All",
             "       Require all granted",
             "    </Directory>",
