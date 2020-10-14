@@ -22,7 +22,7 @@ class Vhost
         {
             $sServerAdmin = PHP_EOL .'ServerAdmin ' . $this->sServerAdmin;
         }
-
+        $sTld = explode('.', $this->sDomain)[0];
         $sSep = DIRECTORY_SEPARATOR;
         return <<<VHOST
 
@@ -40,7 +40,7 @@ class Vhost
 
 <VirtualHost *:{$this->iPort}>
     ServerName {$this->sDomain}{$sServerAdmin}
-    ServerAlias {$this->sDomain}.dev.innovatieapp.nl
+    ServerAlias {$sTld}.dev.innovatieapp.nl
     DocumentRoot {$this->sDocumentRoot}
     <Directory {$this->sDocumentRoot}>
         AllowOverride All
