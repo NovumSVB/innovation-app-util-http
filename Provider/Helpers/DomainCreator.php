@@ -60,7 +60,7 @@ class DomainCreator
             "   ErrorLog {$sLogRoot}/docs.error.log",
             "   CustomLog {$sLogRoot}/docs.access.log combined",
             "",
-            "</VirtualHost>"
+            "</VirtualHost>",
             "",
             "<VirtualHost *:80>",
             "   ServerAlias admin.*.innovatieapp.nl",
