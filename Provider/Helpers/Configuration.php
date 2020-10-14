@@ -92,7 +92,7 @@ class Configuration
     }
     public function getLogDir():string
     {
-        return self::getDirectoriesJson()['log_dir'];
+        return Directory::getSystemRoot() . DIRECTORY_SEPARATOR . self::getDirectoriesJson()['log_dir'];
     }
     public function getAssetsDir():string
     {

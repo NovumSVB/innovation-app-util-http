@@ -29,23 +29,39 @@ class DomainCreator
                                 DIRECTORY_SEPARATOR .
                                 'admin_public_html';
 
+        $sLogRoot = Directory::getSystemRoot() .
+                                DIRECTORY_SEPARATOR .
+                                $this->configuration->getLogDir();
+
+        $sAdminLogDir = $sLogRoot . DIRECTORY_SEPARATOR;
+        $sAdminLogFile = $sLogRoot . DIRECTORY_SEPARATOR;
+        $sSep = DIRECTORY_SEPARATOR;
+
         $aContents = [
             '# This configuration file loads the vhost configurations',
             '# It is auto generated but once generated it will not be overwritten',
             '# So you can adjust this file to your needs',
             '',
             '# Include the dev vhost configurations:',
-            'IncludeOptional dev/*.conf',
+            "IncludeOptional dev{$sSep}*.conf",
             '',
             '# Include the prod vhost host configurations:',
-            'IncludeOptional prod/*.conf',
+            "IncludeOptional prod{$sSep}*.conf",
             '',
             '# Include the test vhost configurations:',
-            'IncludeOptional test/*.conf',
+            "IncludeOptional test{$sSep}*.conf",
             '',
             '<VirtualHost *:80>',
-            '   ServerAlias admin.*',
-            '   VirtualDocumentRoot ' . $sAdminDocumentRoot,
+            '   ServerAlias admin.*.innovatieapp.nl',
+            '   ServerAlias admin.innovatieapp.nl',
+            '   ServerAlias admin.demo.nuicart.nl',
+            "   VirtualDocumentRoot {$sAdminDocumentRoot}",
+            "   <Directory {$sAdminDocumentRoot}>",
+            'AllowOverride All',
+            'Require all granted',
+            '</Directory>',
+            "ErrorLog {$sLogRoot}admin-panels.apache.error.log",
+            "CustomLog {$sLogRoot}admin-panels.apache.access.log combined",
             '</VirtualHost>'
         ];
         file_put_contents($sDestination, join(PHP_EOL, $aContents));

@@ -39,15 +39,16 @@ class Vhost
 # 
 
 <VirtualHost *:{$this->iPort}>
-ServerName {$this->sDomain}{$sServerAdmin}
-DocumentRoot {$this->sDocumentRoot}
-<Directory {$this->sDocumentRoot}>
-AllowOverride All
-Require all granted
-</Directory>
-
-ErrorLog {$this->sLogDirectory}{$sSep}{$this->sDomain}.error.log
-CustomLog {$this->sLogDirectory}{$sSep}{$this->sDomain}.access.log combined
+    ServerName {$this->sDomain}{$sServerAdmin}
+    ServerAlias {$this->sDomain}.dev.innovatieapp.nl
+    DocumentRoot {$this->sDocumentRoot}
+    <Directory {$this->sDocumentRoot}>
+        AllowOverride All
+        Require all granted
+    </Directory>
+    
+    ErrorLog {$this->sLogDirectory}{$sSep}{$this->sDomain}.apache.error.log
+    CustomLog {$this->sLogDirectory}{$sSep}{$this->sDomain}.apache.access.log combined
 
 </VirtualHost>
 VHOST;
