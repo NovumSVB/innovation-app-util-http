@@ -29,40 +29,51 @@ class DomainCreator
                                 DIRECTORY_SEPARATOR .
                                 'admin_public_html';
 
-        $sLogRoot = Directory::getSystemRoot() .
-                                DIRECTORY_SEPARATOR .
-                                $this->configuration->getLogDir();
+        $sLogRoot = $this->configuration->getLogDir() . DIRECTORY_SEPARATOR;
 
         $sAdminLogDir = $sLogRoot . DIRECTORY_SEPARATOR;
         $sAdminLogFile = $sLogRoot . DIRECTORY_SEPARATOR;
         $sSep = DIRECTORY_SEPARATOR;
 
         $aContents = [
-            '# This configuration file loads the vhost configurations',
-            '# It is auto generated but once generated it will not be overwritten',
-            '# So you can adjust this file to your needs',
-            '',
-            '# Include the prod vhost host configurations:',
+            "# This configuration file loads the vhost configurations",
+            "# It is auto generated but once generated it will not be overwritten",
+            "# So you can adjust this file to your needs",
+            "# logroot 2 " . $sLogRoot,
+            "",
+            "# Include the prod vhost host configurations:",
             "IncludeOptional prod{$sSep}*.conf",
-            '',
-            '# Include the dev vhost configurations:',
+            "",
+            "# Include the dev vhost configurations:",
             "# IncludeOptional dev{$sSep}*.conf",
-            '',
-            '# Include the test vhost configurations:',
+            "",
+            "# Include the test vhost configurations:",
             "# IncludeOptional test{$sSep}*.conf",
-            '',
-            '<VirtualHost *:80>',
-            '   ServerAlias admin.*.innovatieapp.nl',
-            '   ServerAlias admin.innovatieapp.nl',
-            '   ServerAlias admin.demo.nuicart.nl',
+            "",
+            "<VirtualHost *:80>",
+            "   ServerAlias admin.*.innovatieapp.nl",
+            "   ServerAlias admin.innovatieapp.nl",
+            "   ServerAlias admin.demo.nuicart.nl",
             "   VirtualDocumentRoot {$sAdminDocumentRoot}",
             "   <Directory {$sAdminDocumentRoot}>",
-            'AllowOverride All',
-            'Require all granted',
-            '</Directory>',
-            "ErrorLog {$sLogRoot}admin-panels.apache.error.log",
-            "CustomLog {$sLogRoot}admin-panels.apache.access.log combined",
-            '</VirtualHost>'
+            "       AllowOverride All",
+            "       Require all granted",
+            "    </Directory>",
+            "   ErrorLog {$sLogRoot}admin.apache.error.log",
+            "   CustomLog {$sLogRoot}admin.apache.access.log combined",
+            "</VirtualHost>",
+            "",
+            "<VirtualHost *:80>",
+            "   # This virtual hosts directive overwrites the default document root so opening a browser and navigating to",
+            "   # 127.0.0.1 shows something meaningfull. You cannot make modifications here as this will be overwritten on",
+            "   # everytime you run composer update or composer install.",
+            "   ServerAdmin webmaster@localhost",
+            "   DocumentRoot /app/.system/public_html/docs.demo.novum.nu/public_html",
+            "",
+            "   ErrorLog {$sLogRoot}/docs.error.log",
+            "   CustomLog {$sLogRoot}/docs.access.log combined",
+            "",
+            "</VirtualHost>"
         ];
         file_put_contents($sDestination, join(PHP_EOL, $aContents));
     }
