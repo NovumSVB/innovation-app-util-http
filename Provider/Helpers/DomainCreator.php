@@ -51,6 +51,18 @@ class DomainCreator
             "# IncludeOptional test{$sSep}*.conf",
             "",
             "<VirtualHost *:80>",
+            "   # This virtual hosts directive overwrites the default document root so opening a browser and navigating to",
+            "   # 127.0.0.1 shows something meaningfull. You cannot make modifications here as this will be overwritten on",
+            "   # everytime you run composer update or composer install.",
+            "   ServerAdmin webmaster@localhost",
+            "   DocumentRoot /app/.system/public_html/docs.demo.novum.nu/public_html",
+            "",
+            "   ErrorLog {$sLogRoot}/docs.error.log",
+            "   CustomLog {$sLogRoot}/docs.access.log combined",
+            "",
+            "</VirtualHost>"
+            "",
+            "<VirtualHost *:80>",
             "   ServerAlias admin.*.innovatieapp.nl",
             "   ServerAlias admin.innovatieapp.nl",
             "   ServerAlias admin.demo.nuicart.nl",
@@ -62,18 +74,6 @@ class DomainCreator
             "   ErrorLog {$sLogRoot}admin.apache.error.log",
             "   CustomLog {$sLogRoot}admin.apache.access.log combined",
             "</VirtualHost>",
-            "",
-            "<VirtualHost *:80>",
-            "   # This virtual hosts directive overwrites the default document root so opening a browser and navigating to",
-            "   # 127.0.0.1 shows something meaningfull. You cannot make modifications here as this will be overwritten on",
-            "   # everytime you run composer update or composer install.",
-            "   ServerAdmin webmaster@localhost",
-            "   DocumentRoot /app/.system/public_html/docs.demo.novum.nu/public_html",
-            "",
-            "   ErrorLog {$sLogRoot}/docs.error.log",
-            "   CustomLog {$sLogRoot}/docs.access.log combined",
-            "",
-            "</VirtualHost>"
         ];
         file_put_contents($sDestination, join(PHP_EOL, $aContents));
     }
