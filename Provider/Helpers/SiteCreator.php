@@ -59,7 +59,7 @@ class SiteCreator
         $sLogdir = $this->configuration->getLogDir();
         $oVhost = new Vhost($sServerAdmin, $sDomain, $iPort, $sDocumentRoot, $sLogdir, $sProtocol == 'https', $sEnv);
 
-        $sDestination = $this->getVhostConfigDir($sEnv) . DIRECTORY_SEPARATOR . $aSite['domain'] . '.conf';
+        $sDestination = $this->getVhostConfigDir($sEnv) . DIRECTORY_SEPARATOR . $sDomain . '.conf';
         $this->console->log("Creatating vhost file " . $sDestination);
 
         file_put_contents($sDestination, $oVhost->getContents());
