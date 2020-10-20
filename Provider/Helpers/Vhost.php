@@ -40,7 +40,7 @@ class Vhost
 
 <VirtualHost *:{$this->iPort}>
     ServerName {$this->sDomain}{$sServerAdmin}
-    ServerAlias {$sTld}.dev.innovatieapp.nl
+    ServerAlias {$sTld}.dev.innovationapp.nl
     SetEnv IS_DEVEL true
     DocumentRoot {$this->sDocumentRoot}
     <Directory {$this->sDocumentRoot}>
