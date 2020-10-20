@@ -46,11 +46,18 @@ class SiteCreator
 
         $sServerAdmin = $aSite['server_admin'] ?? '';
         $sProtocol = $aSite['protocol'];
-        $sDomain = $aSite['domain'] ?? 'https';
+
+        $sDomain = $aSite['domain'];
+        if($sEnv === 'dev')
+        {
+            $sDomain = (explode('.', $aSite['domain'])[0]) . '.innovatieap.nl';
+        }
+
+
         $iPort = (int) ($aSite['port'] ?? ($aSite['protocol'] == 'https') ? 443 : 80);
         $sDocumentRoot = $this->configuration->getDocumentRoot();
         $sLogdir = $this->configuration->getLogDir();
-        $oVhost = new Vhost($sServerAdmin, $sDomain, $iPort, $sDocumentRoot, $sLogdir, $sProtocol == 'https');
+        $oVhost = new Vhost($sServerAdmin, $sDomain, $iPort, $sDocumentRoot, $sLogdir, $sProtocol == 'https', $sEnv);
 
         $sDestination = $this->getVhostConfigDir($sEnv) . DIRECTORY_SEPARATOR . $aSite['domain'] . '.conf';
         $this->console->log("Creatating vhost file " . $sDestination);

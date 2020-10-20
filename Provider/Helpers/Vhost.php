@@ -4,15 +4,16 @@ namespace Provider\Helpers;
 
 class Vhost
 {
-    private $sDomain, $sServerAdmin, $iPort, $sDocumentRoot, $sLogDirectory;
+    private $sDomain, $sServerAdmin, $iPort, $sDocumentRoot, $sLogDirectory, $sEnv;
 
-    function __construct(string $sServerAdmin, string $sDomain, int $iPort, string $sDocumentRoot, string $sLogdir, bool $bUseSSL = false)
+    function __construct(string $sServerAdmin, string $sDomain, int $iPort, string $sDocumentRoot, string $sLogdir, bool $bUseSSL = false, string $sEnv = null)
     {
         $this->sServerAdmin = $sServerAdmin;
         $this->sDomain = $sDomain;
         $this->iPort = $iPort;
         $this->sDocumentRoot = $sDocumentRoot;
         $this->sLogDirectory = $sLogdir;
+        $this->sEnv = $sEnv;
     }
 
     function getContents()
@@ -24,6 +25,13 @@ class Vhost
         }
         $sTld = explode('.', $this->sDomain)[0];
         $sSep = DIRECTORY_SEPARATOR;
+
+        $sExtraParams = '';
+        if($this->sEnv === 'dev')
+        {
+            $sExtraParams = 'SetEnv IS_DEVEL true';
+        }
+
         return <<<VHOST
 
 ########################################################################################
@@ -40,8 +48,7 @@ class Vhost
 
 <VirtualHost *:{$this->iPort}>
     ServerName {$this->sDomain}{$sServerAdmin}
-    ServerAlias {$sTld}.dev.innovatieapp.nl
-    SetEnv IS_DEVEL true
+    {$sExtraParams}
     DocumentRoot {$this->sDocumentRoot}
     <Directory {$this->sDocumentRoot}>
         AllowOverride All
