@@ -46,7 +46,13 @@ class SiteCreator
 
         $sServerAdmin = $aSite['server_admin'] ?? '';
         $sProtocol = $aSite['protocol'];
-        $sDomain = $aSite['domain'] ?? 'https';
+
+        if($sEnv === 'dev')
+        {
+            $sDomain = (explode('.', $aSite['domain'])[0]) . '.innovatieap.nl';
+        }
+
+
         $iPort = (int) ($aSite['port'] ?? ($aSite['protocol'] == 'https') ? 443 : 80);
         $sDocumentRoot = $this->configuration->getDocumentRoot();
         $sLogdir = $this->configuration->getLogDir();

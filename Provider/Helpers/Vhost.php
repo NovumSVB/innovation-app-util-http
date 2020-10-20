@@ -24,6 +24,8 @@ class Vhost
         }
         $sTld = explode('.', $this->sDomain)[0];
         $sSep = DIRECTORY_SEPARATOR;
+
+
         return <<<VHOST
 
 ########################################################################################
