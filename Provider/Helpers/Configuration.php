@@ -89,7 +89,10 @@ class Configuration
     {
         $sInstallationDirectory = $this->getComposerJson()['extra']['install_dir'];
 
-        return Directory::getSystemRoot() . DIRECTORY_SEPARATOR . $this->getSystemDir() . DIRECTORY_SEPARATOR . $sInstallationDirectory;
+        return Directory::getSystemRoot() .
+            DIRECTORY_SEPARATOR . $this->getSystemDir() .
+            DIRECTORY_SEPARATOR . 'public_html' .
+            DIRECTORY_SEPARATOR . $sInstallationDirectory;
     }
     public function getLogDir():string
     {
