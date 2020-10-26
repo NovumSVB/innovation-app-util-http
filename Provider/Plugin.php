@@ -8,6 +8,8 @@ use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
+use Hi\Helpers\DirectoryStructure;
+use Hi\Installer\Util;
 use Provider\Helpers\Cleaner;
 use Provider\Helpers\Configuration;
 use Provider\Helpers\Console;
@@ -59,16 +61,35 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 }
                 if(preg_match('/(novum|hurah)-(domain)/', $oPackageConfig->getComposerJson()['type']))
                 {
+                    $console->log("Creating domain package <info>$sPackageName</info>");
                     $oMainCreator = new DomainCreator($sPackageName, $console);
                     $oMainCreator->create();
                 }
-                if(!preg_match('/(novum|hurah)-(site|api)/', $oPackageConfig->getComposerJson()['type']))
+                if(preg_match('/(novum|hurah)-(site|api)/', $oPackageConfig->getComposerJson()['type']))
                 {
-                    continue;
+                    if($oPackageConfig->getComposerJson()['extra'])
+                    {
+                        /***
+                         * When the main composer.json only contains a site / an api the domain is also installed via
+                         * a dependency it won't be available so we are looking it up and installing it anyway.
+                         */
+                        $sConfigDir = $oPackageConfig->getSiteSettings()['config_dir'];
+                        $sDomainComposerPath = Util::makePath('domain', $sConfigDir, 'composer.json');
+
+                        if (file_exists($sDomainComposerPath))
+                        {
+                            $sComposerFile = file_get_contents($sDomainComposerPath);
+                            $aDomainComposerFile = json_decode($sComposerFile, true);
+                            $sShortComposerName = $aDomainComposerFile['name'];
+                            $console->log("Creating domain package <info>$sShortComposerName</info>, <comment>via dependency</comment>");
+                            $oMainCreator = new DomainCreator($sShortComposerName, $console);
+                            $oMainCreator->create();
+                        }
+                    }
+                    $bHasCandidates = true;
+                    $oCreator = new SiteCreator($sPackageName, $console);
+                    $oCreator->createAll();
                 }
-                $bHasCandidates = true;
-                $oCreator = new SiteCreator($sPackageName, $console);
-                $oCreator->createAll();
             }
         }
 
@@ -76,6 +97,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         {
             $console->log("Did not create any Vhosts, this may be because no API\'s/Websites have been added yet.");
         }
+        else
+        {
+            $console->log("<warning>Webserver configuration files have ben (re)written, the webserver needs a restart for these changes to take effect.</warning>");
+        }
+
     }
     public function postUpdate(Event $event)
     {

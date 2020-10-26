@@ -75,7 +75,5 @@ class SiteCreator
             $this->createVhost($sEnvironment, $aSite);
         }
     }
-
-
 }
 

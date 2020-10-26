@@ -4,6 +4,11 @@
 namespace Provider\Helpers;
 
 
+use Core\Json\JsonUtils;
+use Core\Utils;
+use Hi\Helpers\DirectoryStructure;
+use PhpParser\Node\Scalar\MagicConst\Dir;
+
 class DomainCreator
 {
     private $console;
@@ -16,39 +21,74 @@ class DomainCreator
         $this->console = $console;
         $this->configuration = new Configuration($sPackageName);
     }
+    static function makePath(...$aParts):string
+    {
+        return join(DIRECTORY_SEPARATOR, $aParts);
+    }
+    private function getVhostConfigDir(string $sEnv): string
+    {
+        $sVhostConfigDir = self::makePath($this->configuration->getVhostDir(), $sEnv);
 
+        if(!is_dir($sVhostConfigDir))
+        {
+            mkdir($sVhostConfigDir, 0777, true);
+        }
+        return $sVhostConfigDir;
+    }
     public function create()
     {
-        $this->console->log("Creating main server configuration");
-        $sDestination = $this->configuration->getVhostDir() . '/server.conf';
-        $this->console->log($sDestination);
+        $oDirectoryStructure = new DirectoryStructure();
+        $sJsonFile = file_get_contents("./vendor/{$this->packageName}/composer.json");
+        $aComposerContents = json_decode($sJsonFile, true);
+        $iSystemId = $aComposerContents['extra']['system_id'];
+        $sSysroot = self::makePath(Directory::getSystemRoot(), $this->configuration->getSystemDir());
 
-        $sAdminDocumentRoot = Directory::getSystemRoot() .
-                                DIRECTORY_SEPARATOR .
-                                $this->configuration->getSystemDir() .
-                                DIRECTORY_SEPARATOR .
-                                'admin_public_html';
+        $sDomainConfigFile = self::makePath($sSysroot, 'config', $iSystemId, 'config.php');
+        $aDomainConfig = require_once $sDomainConfigFile;
 
-        $sLogRoot = $this->configuration->getLogDir() . DIRECTORY_SEPARATOR;
+        $sAdminDocumentRoot = self::makePath($sSysroot, 'admin_public_html');
+        // docs, svb, justitie
+        $sDomainBld = explode('.', $aDomainConfig['DOMAIN'])[0];
+        $sTestDomain = str_replace($sDomainBld, $sDomainBld . '.test', $aDomainConfig['DOMAIN']);
+        $aVhostConfigs = [
+            'dev' =>    ['domain' => 'admin.' . $sDomainBld . '.innovatieapp.nl'],
+            'test' =>   ['domain' => 'admin' . $sTestDomain],
+            'prod' =>   ['domain' => 'admin.' . $aDomainConfig['DOMAIN']],
+        ];
 
-        $sAdminLogDir = $sLogRoot . DIRECTORY_SEPARATOR;
-        $sAdminLogFile = $sLogRoot . DIRECTORY_SEPARATOR;
+        foreach ($aVhostConfigs as $sEnv => $aVhostConfig)
+        {
+            $sDomain = $aVhostConfig['domain'];
+
+            $iPort = $aDomainConfig['PORT'] ?? 80;
+            $sServerAdmin = $aDomainConfig['SERVER_ADMIN'] ?? 'anton@nui-boutkam.nl';
+            $bUseSSL = (isset($aDomainConfig['PROTOCOL'])) ? $aDomainConfig['PROTOCOL'] === 'https' : false;
+            $sLogDir = $this->configuration->getLogDir();
+
+            $aParams = [];
+            $aParams['ENV_VARS']['SYSTEM_ID'] = $iSystemId;
+
+            $oVhost = new Vhost($sServerAdmin, $sDomain, $iPort, $sAdminDocumentRoot, $sLogDir, $bUseSSL, $sEnv, $aParams);
+
+            $sDestination = self::makePath($this->getVhostConfigDir($sEnv), $sDomain) . '.conf';
+            $this->console->log("Creatating vhost file " . $sDestination);
+
+            file_put_contents($sDestination, $oVhost->getContents());
+        }
+
+        $sAbsoluteApacheDir = self::makePath(
+            Directory::getSystemRoot(),
+            $this->configuration->getAssetsDir(),
+            'server',
+            'http') . DIRECTORY_SEPARATOR;
+
+        $sLogDirPath = $sLogDir . DIRECTORY_SEPARATOR;
         $sSep = DIRECTORY_SEPARATOR;
 
         $aContents = [
             "# This configuration file loads the vhost configurations",
             "# It is auto generated but once generated it will not be overwritten",
             "# So you can adjust this file to your needs",
-            "# logroot 2 " . $sLogRoot,
-            "",
-            "# Include the prod vhost host configurations:",
-            "# IncludeOptional prod{$sSep}*.conf",
-            "",
-            "# Include the dev vhost configurations:",
-            "IncludeOptional dev{$sSep}*.conf",
-            "",
-            "# Include the test vhost configurations:",
-            "# IncludeOptional test{$sSep}*.conf",
             "",
             "<VirtualHost *:80>",
             "   # This virtual hosts directive overwrites the default document root so opening a browser and navigating to",
@@ -63,25 +103,24 @@ class DomainCreator
             "       Require all granted",
             "    </Directory>",
             "",
-            "   ErrorLog {$sLogRoot}/docs.error.log",
-            "   CustomLog {$sLogRoot}/docs.access.log combined",
+            "   ErrorLog {$sLogDirPath}default-site.error.log",
+            "   CustomLog {$sLogDirPath}default-site.access.log combined",
             "",
             "</VirtualHost>",
             "",
-            "<VirtualHost *:80>",
-            "   ServerAlias admin.*.innovatieapp.nl",
-            "   ServerAlias admin.innovatieapp.nl",
-            "   ServerAlias admin.demo.nuicart.nl",
-            "   SetEnv IS_DEVEL true",
-            "   VirtualDocumentRoot {$sAdminDocumentRoot}",
-            "   <Directory {$sAdminDocumentRoot}>",
-            "       AllowOverride All",
-            "       Require all granted",
-            "    </Directory>",
-            "   ErrorLog {$sLogRoot}admin.apache.error.log",
-            "   CustomLog {$sLogRoot}admin.apache.access.log combined",
-            "</VirtualHost>",
+            "# Include the prod vhost host configurations:",
+            "IncludeOptional {$sAbsoluteApacheDir}prod{$sSep}*.conf",
+            "",
+            "# Include the dev vhost configurations:",
+            "IncludeOptional {$sAbsoluteApacheDir}dev{$sSep}*.conf",
+            "",
+            "# Include the test vhost configurations:",
+            "IncludeOptional {$sAbsoluteApacheDir}test{$sSep}*.conf",
+            "",
         ];
-        file_put_contents($sDestination, join(PHP_EOL, $aContents));
+
+        $sServerConfigFilename = self::makePath($this->configuration->getVhostDir(), 'server.conf');
+
+        file_put_contents($sServerConfigFilename, join(PHP_EOL, $aContents));
     }
 }
