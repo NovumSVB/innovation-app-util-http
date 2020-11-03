@@ -108,7 +108,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
         else
         {
-            $console->log("<warning>Webserver configuration files have ben (re)written, the webserver needs a restart for these changes to take effect.</warning>");
+            $console->log("<warning>Webserver configuration files have been (re)written, the webserver needs a restart for these changes to take effect.</warning>");
         }
 
     }
