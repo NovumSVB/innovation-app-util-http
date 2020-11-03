@@ -32,6 +32,15 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $console->log("Initializing http util");
     }
 
+    public function deactivate(Composer\Composer $composer, Composer\IO\IOInterface $io)
+    {
+
+    }
+    public function uninstall(Composer\Composer $composer, Composer\IO\IOInterface $io)
+    {
+
+    }
+
     /**
      * @param PackageEvent $event
      * @throws \Exception
