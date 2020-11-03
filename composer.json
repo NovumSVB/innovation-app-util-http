@@ -15,8 +15,8 @@
         }
     },
     "require": {
-        "composer/composer": "^2.0.4",
-        "composer-plugin-api": "^1.1.0",
+        "composer/composer": "1.10.*",			
+        "composer-plugin-api": "^1.0",
         "ext-json": "*",
         "hurah/hurah-installer" : "dev-master",
         "php" : ">=7.3"
