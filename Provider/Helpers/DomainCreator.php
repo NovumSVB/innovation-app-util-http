@@ -44,7 +44,7 @@ class DomainCreator
         $sSysroot = self::makePath(Directory::getSystemRoot(), $this->configuration->getSystemDir());
 
         $sDomainConfigFile = self::makePath($sSysroot, 'config', $iSystemId, 'config.php');
-        $aDomainConfig = require_once $sDomainConfigFile;
+        $aDomainConfig = require $sDomainConfigFile;
 
         $sAdminDocumentRoot = self::makePath($sSysroot, 'admin_public_html');
         // docs, svb, justitie
