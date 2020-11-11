@@ -52,7 +52,7 @@ class DomainCreator
         $sTestDomain = str_replace($sDomainBld, $sDomainBld . '.test', $aDomainConfig['DOMAIN']);
         $aVhostConfigs = [
             'dev' =>    ['domain' => 'admin.' . $sDomainBld . '.innovatieapp.nl'],
-            'test' =>   ['domain' => 'admin.y' . $sTestDomain],
+            'test' =>   ['domain' => 'admin.' . $sTestDomain],
             'prod' =>   ['domain' => 'admin.' . $aDomainConfig['DOMAIN']],
         ];
 
