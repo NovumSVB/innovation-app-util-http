@@ -43,7 +43,7 @@ class DomainCreator
         $iSystemId = $aComposerContents['extra']['system_id'];
         $sSysroot = self::makePath(Directory::getSystemRoot(), $this->configuration->getSystemDir());
 
-        $sDomainConfigFile = self::makePath($sSysroot, 'config', $iSystemId, 'config.php');
+        $sDomainConfigFile = self::makePath($oDirectoryStructure->getSystemRoot(), 'vendor', $this->packageName, 'config.php');
         $aDomainConfig = require $sDomainConfigFile;
 
         $sAdminDocumentRoot = self::makePath($sSysroot, 'admin_public_html');
