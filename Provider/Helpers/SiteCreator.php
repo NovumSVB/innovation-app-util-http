@@ -50,7 +50,15 @@ class SiteCreator
         $sDomain = $aSite['domain'];
         if($sEnv === 'dev')
         {
-            $sDomain = (explode('.', $aSite['domain'])[0]) . '.innovatieapp.nl';
+            $aParts = $aSite['domain'];
+            if($aParts[0] === 'api')
+            {
+                $sDomain = $aSite['domain'][0] . '.' . $aSite['domain'][1] . '.innovatieapp.nl';
+            }
+            else
+            {
+                $sDomain = (explode('.', $aSite['domain'])[0]) . '.innovatieapp.nl';
+            }
         }
 
 
