@@ -61,7 +61,7 @@ class Vhost
 <VirtualHost *:{$this->iPort}>
     ServerName {$this->sDomain}{$sServerAdmin}
     {$sExtraParams}
-    DocumentRoot {$this->sDocumentRoot}/public_html
+    DocumentRoot {$this->sDocumentRoot}
     <Directory {$this->sDocumentRoot}>
         AllowOverride All
         Require all granted
