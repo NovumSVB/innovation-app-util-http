@@ -60,9 +60,9 @@ class DomainCreator
         {
             $sDomain = $aVhostConfig['domain'];
 
-            $iPort = $aDomainConfig['PORT'] ?? 80;
+            $iPort = 80; //$aDomainConfig['PORT'] ?? 80;
             $sServerAdmin = $aDomainConfig['SERVER_ADMIN'] ?? 'anton@nui-boutkam.nl';
-            $bUseSSL = (isset($aDomainConfig['PROTOCOL'])) ? $aDomainConfig['PROTOCOL'] === 'https' : false;
+            $bUseSSL = false; // (isset($aDomainConfig['PROTOCOL'])) ? $aDomainConfig['PROTOCOL'] === 'https' : false;
             $sLogDir = $this->configuration->getLogDir();
 
             $aParams = [];

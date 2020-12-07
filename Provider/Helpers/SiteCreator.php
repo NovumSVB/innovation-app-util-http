@@ -47,7 +47,8 @@ class SiteCreator
         $sServerAdmin = $aSite['server_admin'] ?? '';
         $sProtocol = $aSite['protocol'];
 
-        $iPort = (int) ($aSite['port'] ?? ($aSite['protocol'] == 'https') ? 443 : 80);
+        $sProtocol = 'http';
+        $iPort = 80; //(int) ($aSite['port'] ?? ($aSite['protocol'] == 'https') ? 443 : 80);
         $sDocumentRoot = $this->configuration->getDocumentRoot();
         $sLogdir = $this->configuration->getLogDir();
         $oVhost = new Vhost($sServerAdmin, $aSite['domain'], $iPort, $sDocumentRoot, $sLogdir, $sProtocol == 'https', $sEnv);
