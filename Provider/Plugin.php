@@ -115,7 +115,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     public function postUpdate(Event $event)
     {
         $console = new Console($event->getIO());
-        $console->log("Running post package update " . $event->getComposer()->getPackage()->getName(), self::$installerName);
+        $console->log("Running post package update <comment>" . $event->getComposer()->getPackage()->getName() . "</comment>", self::$installerName);
 
         $this->postInstall($event);
     }
