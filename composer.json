@@ -24,8 +24,5 @@
     "extra": {
         "class": "Provider\\Plugin"
     },
-    "minimum-stability": "dev",
-    "bin" : [
-        "bin/certbot.sh"
-    ]
+    "minimum-stability": "dev"
 }

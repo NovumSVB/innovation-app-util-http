@@ -8,14 +8,11 @@ use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
-use Hi\Helpers\DirectoryStructure;
 use Hi\Installer\Util;
 use Provider\Helpers\Cleaner;
 use Provider\Helpers\Configuration;
 use Provider\Helpers\Console;
-use Provider\Helpers\Creator;
 use Provider\Helpers\DomainCreator;
-use Provider\Helpers\MainCreator;
 use Provider\Helpers\SiteCreator;
 
 class Plugin implements PluginInterface, EventSubscriberInterface
@@ -50,6 +47,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         $sPackageName = $event->getComposer()->getPackage()->getName();
         $console = new Console($event->getIO());
+
+        if($sPackageName !== 'novum/innovation-app-util-docker') {
+            $console->log("Not running post package update <comment>" . $sPackageName . " !== novum/innovation-app-util-docker</comment>", self::$installerName);
+            return;
+        }
+
         $console->log("Generating vHost configurations " . $sPackageName, self::$installerName);
 
         $aRequiredPackages = $event->getComposer()->getPackage()->getRequires();
@@ -115,6 +118,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     public function postUpdate(Event $event)
     {
         $console = new Console($event->getIO());
+
+        if($event->getComposer()->getPackage()->getName() !== 'novum/innovation-app-util-docker') {
+            $console->log("Not running post package update <comment>" . $event->getComposer()->getPackage()->getName() . " !== novum/innovation-app-util-docker</comment>", self::$installerName);
+            return;
+        }
         $console->log("Running post package update <comment>" . $event->getComposer()->getPackage()->getName() . "</comment>", self::$installerName);
 
         $this->postInstall($event);
