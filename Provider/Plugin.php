@@ -8,10 +8,12 @@ use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
+use Hi\Installer\Util;
 use Provider\Helpers\Cleaner;
 use Provider\Helpers\Configuration;
 use Provider\Helpers\Console;
-use Provider\Helpers\Creator;
+use Provider\Helpers\DomainCreator;
+use Provider\Helpers\SiteCreator;
 
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
@@ -24,11 +26,16 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $this->io = $io;
         $console = new Console($io);
 
-        $console->log("Initializing");
-        //        print_r($composer->getRepositoryManager()->getRepositories());
+        $console->log("Initializing http util");
+    }
 
-        // $installer = new TemplateInstaller($io, $composer);
-        // $composer->getInstallationManager()->addInstaller($installer);
+    public function deactivate(Composer\Composer $composer, Composer\IO\IOInterface $io)
+    {
+
+    }
+    public function uninstall(Composer\Composer $composer, Composer\IO\IOInterface $io)
+    {
+
     }
 
     /**
@@ -38,9 +45,14 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
     public function postInstall(Event $event)
     {
-
         $sPackageName = $event->getComposer()->getPackage()->getName();
         $console = new Console($event->getIO());
+
+        if($sPackageName !== 'novum/innovation-app-util-docker') {
+            $console->log("Not running post package update <comment>" . $sPackageName . " !== novum/innovation-app-util-docker</comment>", self::$installerName);
+            return;
+        }
+
         $console->log("Generating vHost configurations " . $sPackageName, self::$installerName);
 
         $aRequiredPackages = $event->getComposer()->getPackage()->getRequires();
@@ -48,7 +60,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $oPackageConfig = new Configuration($sPackageName);
 
         Cleaner::removePrevious($oPackageConfig, $console);
-
+        $bHasCandidates = false;
         if(is_array($aRequiredPackages))
         {
             foreach ($aRequiredPackages as $sPackageName => $oPackageProperties)
@@ -59,27 +71,62 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 {
                     continue;
                 }
-
-                if(!preg_match('/(novum|hurah)-(site|api)/', $oPackageConfig->getComposerJson()['type']))
+                if(preg_match('/(novum|hurah)-(domain)/', $oPackageConfig->getComposerJson()['type']))
                 {
-                    continue;
+                    $console->log("Creating domain package <info>$sPackageName</info>");
+                    $oMainCreator = new DomainCreator($sPackageName, $console);
+                    $oMainCreator->create();
                 }
-                $oCreator = new Creator($sPackageName, $console);
-                $oCreator->createAll();
+                if(preg_match('/(novum|hurah)-(site|api)/', $oPackageConfig->getComposerJson()['type']))
+                {
+                    if($oPackageConfig->getComposerJson()['extra'])
+                    {
+                        /***
+                         * When the main composer.json only contains a site / an api the domain is also installed via
+                         * a dependency it won't be available so we are looking it up and installing it anyway.
+                         */
+                        $sConfigDir = $oPackageConfig->getSiteSettings()['config_dir'];
+                        $sDomainComposerPath = Util::makePath('domain', $sConfigDir, 'composer.json');
+
+                        if (file_exists($sDomainComposerPath))
+                        {
+                            $sComposerFile = file_get_contents($sDomainComposerPath);
+                            $aDomainComposerFile = json_decode($sComposerFile, true);
+                            $sShortComposerName = $aDomainComposerFile['name'];
+                            $console->log("Creating domain package <info>$sShortComposerName</info>, <comment>via dependency</comment>");
+                            $oMainCreator = new DomainCreator($sShortComposerName, $console);
+                            $oMainCreator->create();
+                        }
+                    }
+                    $bHasCandidates = true;
+                    $oCreator = new SiteCreator($sPackageName, $console);
+                    $oCreator->createAll();
+                }
             }
         }
-    }
 
+        if(!$bHasCandidates)
+        {
+            $console->log("Did not create any Vhosts, this may be because no API\'s/Websites have been added yet.");
+        }
+        else
+        {
+            $console->log("<warning>Webserver configuration files have been (re)written, the webserver needs a restart for these changes to take effect.</warning>");
+        }
+
+    }
     public function postUpdate(Event $event)
     {
         $console = new Console($event->getIO());
-        $console->log("Running post package update " . $event->getComposer()->getPackage()->getName(), self::$installerName);
+
+        if($event->getComposer()->getPackage()->getName() !== 'novum/innovation-app-util-docker') {
+            $console->log("Not running post package update <comment>" . $event->getComposer()->getPackage()->getName() . " !== novum/innovation-app-util-docker</comment>", self::$installerName);
+            return;
+        }
+        $console->log("Running post package update <comment>" . $event->getComposer()->getPackage()->getName() . "</comment>", self::$installerName);
 
         $this->postInstall($event);
     }
-
-
-
     public static function getSubscribedEvents()
     {
         return [

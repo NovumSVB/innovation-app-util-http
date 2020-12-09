@@ -1,6 +1,8 @@
 <?php
 namespace Provider\Helpers;
 
+use Core\Utils;
+
 class Configuration
 {
 
@@ -40,9 +42,8 @@ class Configuration
         }
         $sPackageJson = file_get_contents($this->sPackageJsonFile);
         $this->aComposerjson = json_decode($sPackageJson, true);
-
-
     }
+
 
     function getVhostDir():string
     {
@@ -72,11 +73,15 @@ class Configuration
      */
     private function getDirectoriesJson():array
     {
-        $sDirectoriesJsonFile = dirname(dirname(dirname(__DIR__))) . '/hurah-installer/directory-structure.json';
+        $sDirectoriesJsonFile = './vendor/hurah/hurah-installer/directory-structure.json';
         $sDirectoriesJsonContent = file_get_contents($sDirectoriesJsonFile);
         $aDirectoriesJson = json_decode($sDirectoriesJsonContent, true);
 
         return $aDirectoriesJson;
+    }
+    public function getSystemDir():string
+    {
+        return self::getDirectoriesJson()['system_dir'];
     }
     public function getPublicDir():string
     {
@@ -85,11 +90,17 @@ class Configuration
     public function getDocumentRoot(): string
     {
         $sInstallationDirectory = $this->getComposerJson()['extra']['install_dir'];
-        return $this->getPublicDir() . DIRECTORY_SEPARATOR . $sInstallationDirectory;
+
+        return
+            Directory::getSystemRoot() . DIRECTORY_SEPARATOR .
+            $this->getSystemDir() . DIRECTORY_SEPARATOR .
+            'public_html' . DIRECTORY_SEPARATOR .
+            $sInstallationDirectory . DIRECTORY_SEPARATOR .
+            'public_html';
     }
     public function getLogDir():string
     {
-        return self::getDirectoriesJson()['log_dir'];
+        return Directory::getSystemRoot() . DIRECTORY_SEPARATOR . self::getDirectoriesJson()['log_dir'];
     }
     public function getAssetsDir():string
     {

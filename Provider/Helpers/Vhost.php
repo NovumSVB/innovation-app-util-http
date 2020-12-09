@@ -4,10 +4,9 @@ namespace Provider\Helpers;
 
 class Vhost
 {
-    private $sDomain, $sServerAdmin, $iPort, $sDocumentRoot, $sLogDirectory;
-    private bool $bUseSsl;
+    private $sDomain, $sServerAdmin, $iPort, $sDocumentRoot, $sLogDirectory, $sEnv, $aParams;
 
-    function __construct(string $sServerAdmin, string $sDomain, int $iPort, string $sDocumentRoot, string $sLogdir, bool $bUseSSL = false)
+    function __construct(string $sServerAdmin, string $sDomain, int $iPort, string $sDocumentRoot, string $sLogdir, bool $bUseSSL = false, string $sEnv = null, $aParams = [])
     {
         $this->sServerAdmin = $sServerAdmin;
         $this->sDomain = $sDomain;
@@ -15,6 +14,8 @@ class Vhost
         $this->sDocumentRoot = $sDocumentRoot;
         $this->sLogDirectory = $sLogdir;
         $this->bUseSsl = $bUseSSL;
+        $this->sEnv = $sEnv;
+        $this->aParams = $aParams;
     }
 
     function getContents()
@@ -35,6 +36,24 @@ class Vhost
         $sUseSSl = join(PHP_EOL, $aAddUseSsl);
 
         $sSep = DIRECTORY_SEPARATOR;
+
+        $aExtraParams = [];
+
+        if(isset($this->aParams['ENV_VARS']))
+        {
+            foreach ($this->aParams['ENV_VARS'] as $sVarName => $sVarValue)
+            {
+                $aExtraParams[] = "SetEnv $sVarName $sVarValue";
+            }
+
+        }
+        if($this->sEnv === 'dev')
+        {
+            $aExtraParams[] = "\tSetEnv IS_DEVEL true";
+        }
+
+        $sExtraParams = join(PHP_EOL, $aExtraParams);
+
         return <<<VHOST
 
 ########################################################################################
@@ -50,15 +69,16 @@ class Vhost
 # 
 {($this->bUseSsl ? '<IfModule mod_ssl.c>' : '')}
 <VirtualHost *:{$this->iPort}>
-ServerName {$this->sDomain}{$sServerAdmin}
-DocumentRoot {$this->sDocumentRoot}
-<Directory {$this->sDocumentRoot}>
-AllowOverride All
-Require all granted
-</Directory>
-
-ErrorLog {$this->sLogDirectory}{$sSep}{$this->sDomain}.error.log
-CustomLog {$this->sLogDirectory}{$sSep}{$this->sDomain}.access.log combined
+    ServerName {$this->sDomain}{$sServerAdmin}
+    {$sExtraParams}
+    DocumentRoot {$this->sDocumentRoot}
+    <Directory {$this->sDocumentRoot}>
+        AllowOverride All
+        Require all granted
+    </Directory>
+    
+    ErrorLog {$this->sLogDirectory}{$sSep}{$this->sDomain}.apache.error.log
+    CustomLog {$this->sLogDirectory}{$sSep}{$this->sDomain}.apache.access.log combined
 
 </IfModule>
 {($this->bUseSsl ? '<IfModule mod_ssl.c>' : '')}
