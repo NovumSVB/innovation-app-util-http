@@ -128,7 +128,9 @@ class DomainCreator
             "IncludeOptional {$sAbsoluteApacheDir}dev{$sSep}*.conf",
             "",
             "# Include the test vhost configurations:",
-            "IncludeOptional {$sAbsoluteApacheDir}test{$sSep}*.conf",
+            "# Test environment is disabled until certbot script will support these ",
+            "# IncludeOptional {$sAbsoluteApacheDir}test{$sSep}*.conf",
+
             "",
         ];
 
