@@ -4,9 +4,15 @@ namespace Provider\Helpers;
 
 class Vhost
 {
-    private $sDomain, $sServerAdmin, $iPort, $sDocumentRoot, $sLogDirectory, $sEnv, $aParams;
+    private string $sDomain;
+    private string $sServerAdmin;
+    private int $iPort;
+    private string $sDocumentRoot;
+    private string $sLogDirectory;
+    private string $sEnv;
+    private array $aParams;
 
-    function __construct(string $sServerAdmin, string $sDomain, int $iPort, string $sDocumentRoot, string $sLogdir, bool $bUseSSL = false, string $sEnv = null, $aParams = [])
+    function __construct(string $sServerAdmin, string $sDomain, int $iPort, string $sDocumentRoot, string $sLogdir, bool $bUseSSL = false, string $sEnv = 'live', array $aParams = [])
     {
         $this->sServerAdmin = $sServerAdmin;
         $this->sDomain = $sDomain;
@@ -26,18 +32,16 @@ class Vhost
             $sServerAdmin = PHP_EOL .'ServerAdmin ' . $this->sServerAdmin;
         }
 
-        $aAddUseSsl = [];
+        $aExtraParams = [];
+
         if($this->bUseSsl){
             $aAddUseSsl[] = "SSLCertificateFile /app/data/CertBot/live/{$this->sDomain}/fullchain.pem";
             $aAddUseSsl[] = "SSLCertificateKeyFile /app/data/CertBot/live/{$this->sDomain}/privkey.pem";
-            // $aAddUseSsl[] = "Include /etc/letsencrypt/options-ssl-apache.conf";
+            $aAddUseSsl[] = "Include /app/data/CertBot/options-ssl-apache.conf";
         }
-
-        $sUseSSl = join(PHP_EOL, $aAddUseSsl);
 
         $sSep = DIRECTORY_SEPARATOR;
 
-        $aExtraParams = [];
 
         if(isset($this->aParams['ENV_VARS']))
         {
@@ -70,7 +74,6 @@ class Vhost
 {($this->bUseSsl ? '<IfModule mod_ssl.c>' : '')}
 <VirtualHost *:{$this->iPort}>
     ServerName {$this->sDomain}{$sServerAdmin}
-    {$sExtraParams}
     DocumentRoot {$this->sDocumentRoot}
     <Directory {$this->sDocumentRoot}>
         AllowOverride All
@@ -79,7 +82,7 @@ class Vhost
     
     ErrorLog {$this->sLogDirectory}{$sSep}{$this->sDomain}.apache.error.log
     CustomLog {$this->sLogDirectory}{$sSep}{$this->sDomain}.apache.access.log combined
-
+    {$sExtraParams}
 </IfModule>
 {($this->bUseSsl ? '<IfModule mod_ssl.c>' : '')}
 
