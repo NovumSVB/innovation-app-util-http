@@ -35,9 +35,9 @@ class Vhost
         $aExtraParams = [];
 
         if($this->bUseSsl){
-            $aAddUseSsl[] = "SSLCertificateFile /app/data/CertBot/live/{$this->sDomain}/fullchain.pem";
-            $aAddUseSsl[] = "SSLCertificateKeyFile /app/data/CertBot/live/{$this->sDomain}/privkey.pem";
-            $aAddUseSsl[] = "Include /app/data/CertBot/options-ssl-apache.conf";
+            $aExtraParams[] = "SSLCertificateFile /app/data/CertBot/live/{$this->sDomain}/fullchain.pem";
+            $aExtraParams[] = "SSLCertificateKeyFile /app/data/CertBot/live/{$this->sDomain}/privkey.pem";
+            $aExtraParams[] = "Include /app/data/CertBot/options-ssl-apache.conf";
         }
 
         $sSep = DIRECTORY_SEPARATOR;
