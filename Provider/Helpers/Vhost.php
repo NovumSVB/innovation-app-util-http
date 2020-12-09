@@ -58,6 +58,15 @@ class Vhost
 
         $sExtraParams = join(PHP_EOL, $aExtraParams);
 
+        $sTop = '';
+        $sBottom = '';
+
+        if($this->bUseSsl)
+        {
+            $sTop = '<IfModule mod_ssl.c>';
+            $sBottom = '</IfModule>';
+        }
+
         return <<<VHOST
 
 ########################################################################################
@@ -71,7 +80,7 @@ class Vhost
 # See https://gitlab.com/NovumGit/innovation-app-util-http for detailed information about
 # these config files.
 # 
-{($this->bUseSsl ? '<IfModule mod_ssl.c>' : '')}
+$sTop
 <VirtualHost *:{$this->iPort}>
     ServerName {$this->sDomain}{$sServerAdmin}
     DocumentRoot {$this->sDocumentRoot}
@@ -83,8 +92,8 @@ class Vhost
     ErrorLog {$this->sLogDirectory}{$sSep}{$this->sDomain}.apache.error.log
     CustomLog {$this->sLogDirectory}{$sSep}{$this->sDomain}.apache.access.log combined
     {$sExtraParams}
-</IfModule>
-{($this->bUseSsl ? '<IfModule mod_ssl.c>' : '')}
+</VirtualHost>
+$sBottom
 
 VHOST;
     }
