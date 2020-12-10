@@ -60,21 +60,29 @@ class DomainCreator
         {
             $sDomain = $aVhostConfig['domain'];
 
-            if(isset($aDomainConfig['PORT']))
+
+            if($sEnv === 'dev')
             {
-                $iPort = $aDomainConfig['PORT'];
-            }
-            else if(isset($aDomainConfig['PROTOCOL']))
-            {
-                $iPort = $aDomainConfig['PROTOCOL'] === 'https' ? 443 : 80;
+                $iPort = 80;
+                $bUseSSL = false;
             }
             else
             {
-                $iPort = 80;
+                if(isset($aDomainConfig['PORT']))
+                {
+                    $iPort = $aDomainConfig['PORT'];
+                }
+                else if(isset($aDomainConfig['PROTOCOL']))
+                {
+                    $iPort = $aDomainConfig['PROTOCOL'] === 'https' ? 443 : 80;
+                }
+                else
+                {
+                    $iPort = 80;
+                }
+                $bUseSSL = (isset($aDomainConfig['PROTOCOL'])) ? $aDomainConfig['PROTOCOL'] === 'https' : false;
             }
-
             $sServerAdmin = $aDomainConfig['SERVER_ADMIN'] ?? 'anton@nui-boutkam.nl';
-            $bUseSSL = (isset($aDomainConfig['PROTOCOL'])) ? $aDomainConfig['PROTOCOL'] === 'https' : false;
             $sLogDir = $this->configuration->getLogDir();
 
             $aParams = [];
@@ -97,12 +105,6 @@ class DomainCreator
         $sLogDirPath = $sLogDir . DIRECTORY_SEPARATOR;
         $sSep = DIRECTORY_SEPARATOR;
 
-        $sCommentLiveTest = '';
-
-        if(isset($_SERVER['IS_DEVEL']) || isset($_ENV['IS_DEVEL']))
-        {
-            $sCommentLiveTest = '# ';
-        }
         $aContents = [
             "# This configuration file loads the vhost configurations",
             "# It is auto generated but once generated it will not be overwritten",
@@ -127,13 +129,13 @@ class DomainCreator
             "</VirtualHost>",
             "",
             "# Include the prod vhost host configurations:",
-            "{$sCommentLiveTest}IncludeOptional {$sAbsoluteApacheDir}prod{$sSep}*.conf",
+            "IncludeOptional {$sAbsoluteApacheDir}prod{$sSep}*.conf",
             "",
             "# Include the dev vhost configurations:",
             "IncludeOptional {$sAbsoluteApacheDir}dev{$sSep}*.conf",
             "",
             "# Include the test vhost configurations:",
-            "{$sCommentLiveTest}IncludeOptional {$sAbsoluteApacheDir}test{$sSep}*.conf",
+            "IncludeOptional {$sAbsoluteApacheDir}test{$sSep}*.conf",
             "",
         ];
 
