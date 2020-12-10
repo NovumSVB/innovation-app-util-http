@@ -105,10 +105,12 @@ class DomainCreator
         $sLogDirPath = $sLogDir . DIRECTORY_SEPARATOR;
         $sSep = DIRECTORY_SEPARATOR;
 
-        $sCommentEnvs = '';
+        $sDisableLiveEnvironments = '';
+        $sDisableDevEnvironments = '#';
         if(isset($_SERVER['IS_DEVEL']) || isset($_ENV['IS_DEVEL']))
         {
-            $sCommentEnvs = '#';
+            $sDisableLiveEnvironments = '#';
+            $sDisableDevEnvironments = '';
         }
 
         $aContents = [
@@ -135,13 +137,13 @@ class DomainCreator
             "</VirtualHost>",
             "",
             "# Include the prod vhost host configurations:",
-            "{$sCommentEnvs}IncludeOptional {$sAbsoluteApacheDir}prod{$sSep}*.conf",
+            "{$sDisableLiveEnvironments}IncludeOptional {$sAbsoluteApacheDir}prod{$sSep}*.conf",
             "",
             "# Include the test vhost configurations:",
-            "{$sCommentEnvs}IncludeOptional {$sAbsoluteApacheDir}test{$sSep}*.conf",
+            "{$sDisableLiveEnvironments}IncludeOptional {$sAbsoluteApacheDir}test{$sSep}*.conf",
             "",
             "# Include the dev vhost configurations:",
-            "IncludeOptional {$sAbsoluteApacheDir}dev{$sSep}*.conf",
+            "{$sDisableDevEnvironments}IncludeOptional {$sAbsoluteApacheDir}dev{$sSep}*.conf",
             "",
             "",
         ];
