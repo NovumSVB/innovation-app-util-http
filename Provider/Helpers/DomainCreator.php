@@ -60,7 +60,6 @@ class DomainCreator
         {
             $sDomain = $aVhostConfig['domain'];
 
-
             if(isset($aDomainConfig['PORT']))
             {
                 $iPort = $aDomainConfig['PORT'];
@@ -98,6 +97,12 @@ class DomainCreator
         $sLogDirPath = $sLogDir . DIRECTORY_SEPARATOR;
         $sSep = DIRECTORY_SEPARATOR;
 
+        $sCommentLiveTest = '';
+
+        if(isset($_SERVER['IS_DEVEL']) || isset($_ENV['IS_DEVEL']))
+        {
+            $sCommentLiveTest = '# ';
+        }
         $aContents = [
             "# This configuration file loads the vhost configurations",
             "# It is auto generated but once generated it will not be overwritten",
@@ -122,13 +127,13 @@ class DomainCreator
             "</VirtualHost>",
             "",
             "# Include the prod vhost host configurations:",
-            "IncludeOptional {$sAbsoluteApacheDir}prod{$sSep}*.conf",
+            "{$sCommentLiveTest}IncludeOptional {$sAbsoluteApacheDir}prod{$sSep}*.conf",
             "",
             "# Include the dev vhost configurations:",
             "IncludeOptional {$sAbsoluteApacheDir}dev{$sSep}*.conf",
             "",
             "# Include the test vhost configurations:",
-            "IncludeOptional {$sAbsoluteApacheDir}test{$sSep}*.conf",
+            "{$sCommentLiveTest}IncludeOptional {$sAbsoluteApacheDir}test{$sSep}*.conf",
             "",
         ];
 
