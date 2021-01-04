@@ -5,8 +5,7 @@ use Composer\IO\IOInterface;
 
 class Console
 {
-
-    private $io;
+    private IOInterface $io;
     function __construct(IOInterface $io)
     {
         $this->io = $io;

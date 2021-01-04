@@ -1,7 +1,7 @@
 <?php
 namespace Provider\Helpers;
 
-use Core\Utils;
+use Composer\Factory;
 
 class Configuration
 {
@@ -23,7 +23,7 @@ class Configuration
 
         $this->vhostDir = $this->getAssetsDir() . DIRECTORY_SEPARATOR . 'server' . DIRECTORY_SEPARATOR . 'http';
 
-        $projectRootPath = dirname(\Composer\Factory::getComposerFile());
+        $projectRootPath = dirname(Factory::getComposerFile());
 
         $this->sPackageRoot = $projectRootPath . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . $sPackageName;
         $sSiteSettingsFile = $this->sPackageRoot . DIRECTORY_SEPARATOR  . 'site.json';

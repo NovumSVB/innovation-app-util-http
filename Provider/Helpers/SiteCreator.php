@@ -2,7 +2,9 @@
 
 namespace Provider\Helpers;
 
+use Composer\Autoload\ClassLoader;
 use Provider\Plugin;
+use ReflectionClass;
 
 
 class SiteCreator
@@ -36,13 +38,6 @@ class SiteCreator
         {
             return;
         }
-        $reflection = new \ReflectionClass(\Composer\Autoload\ClassLoader::class);
-        $vendorDir = dirname(dirname($reflection->getFileName()));
-
-        /**
-         * @todo this may not be the best way of doing this.
-         */
-        $sSystemRoot = getcwd();
 
         $sServerAdmin = $aSite['server_admin'] ?? '';
         $sProtocol = $aSite['protocol'];

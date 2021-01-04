@@ -11,6 +11,7 @@ class Vhost
     private string $sLogDirectory;
     private string $sEnv;
     private array $aParams;
+    private bool $bUseSsl;
 
     function __construct(string $sServerAdmin, string $sDomain, int $iPort, string $sDocumentRoot, string $sLogdir, bool $bUseSSL = false, string $sEnv = 'live', array $aParams = [])
     {

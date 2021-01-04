@@ -2,7 +2,6 @@
 
 namespace Provider\Helpers;
 
-use DirectoryIterator;
 use Provider\Plugin;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -12,6 +11,7 @@ class Cleaner
 
     /**
      * @param Configuration $configuration
+     * @param Console $console
      */
     static function removePrevious(Configuration $configuration, Console $console)
     {
