@@ -15,10 +15,16 @@
         }
     },
     "require": {
-        "composer/composer": "^2.0.8",
+        "hurah/util" : "*",
+        "hurah/data-types" : "*",
+
+        "php" : ">=7.4",
         "ext-json": "*",
-        "hurah/hurah-installer" : "dev-master",
-        "php" : ">=7.4"
+
+        "composer/composer": "^2.0.8",
+        "composer-plugin-api" : "*",
+        "hurah/hurah-installer" : "dev-master"
+
     },
     "extra": {
         "class": "Provider\\Plugin"
