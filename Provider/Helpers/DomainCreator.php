@@ -4,10 +4,7 @@
 namespace Provider\Helpers;
 
 
-use Core\Json\JsonUtils;
-use Core\Utils;
 use Hi\Helpers\DirectoryStructure;
-use PhpParser\Node\Scalar\MagicConst\Dir;
 
 class DomainCreator
 {
@@ -21,21 +18,18 @@ class DomainCreator
         $this->console = $console;
         $this->configuration = new Configuration($sPackageName);
     }
-    static function makePath(...$aParts):string
-    {
-        return join(DIRECTORY_SEPARATOR, $aParts);
-    }
-    private function getVhostConfigDir(string $sEnv): string
-    {
-        $sVhostConfigDir = self::makePath($this->configuration->getVhostDir(), $sEnv);
 
-        if(!is_dir($sVhostConfigDir))
-        {
-            mkdir($sVhostConfigDir, 0777, true);
-        }
-        return $sVhostConfigDir;
-    }
     public function create()
+    {
+        $this->createDomainVhostConfig();
+        $this->createMainApacheConfig();
+
+    }
+
+    /**
+     * @return string
+     */
+    private function createDomainVhostConfig(): void
     {
         $oDirectoryStructure = new DirectoryStructure();
         $sJsonFile = file_get_contents("./vendor/{$this->packageName}/composer.json");
@@ -47,37 +41,23 @@ class DomainCreator
         $aDomainConfig = require $sDomainConfigFile;
 
         $sAdminDocumentRoot = self::makePath($sSysroot, 'admin_public_html');
-        // docs, svb, justitie
-        $sDomainBld = explode('.', $aDomainConfig['DOMAIN'])[0];
-        $sTestDomain = str_replace($sDomainBld, $sDomainBld . '.test', $aDomainConfig['DOMAIN']);
-        $aVhostConfigs = [
-            'dev' =>    ['domain' => 'admin.' . $sDomainBld . '.innovatieapp.nl'],
-            'test' =>   ['domain' => 'admin.' . $sTestDomain],
-            'prod' =>   ['domain' => 'admin.' . $aDomainConfig['DOMAIN']],
-        ];
 
-        foreach ($aVhostConfigs as $sEnv => $aVhostConfig)
-        {
+
+        $aVhostConfigs = $this->getEnvironmentOptions($aDomainConfig['DOMAIN']);
+
+        foreach ($aVhostConfigs as $sEnv => $aVhostConfig) {
             $sDomain = $aVhostConfig['domain'];
 
 
-            if($sEnv === 'dev')
-            {
+            if ($sEnv === 'dev') {
                 $iPort = 80;
                 $bUseSSL = false;
-            }
-            else
-            {
-                if(isset($aDomainConfig['PORT']))
-                {
+            } else {
+                if (isset($aDomainConfig['PORT'])) {
                     $iPort = $aDomainConfig['PORT'];
-                }
-                else if(isset($aDomainConfig['PROTOCOL']))
-                {
+                } else if (isset($aDomainConfig['PROTOCOL'])) {
                     $iPort = $aDomainConfig['PROTOCOL'] === 'https' ? 443 : 80;
-                }
-                else
-                {
+                } else {
                     $iPort = 80;
                 }
                 $bUseSSL = (isset($aDomainConfig['PROTOCOL'])) ? $aDomainConfig['PROTOCOL'] === 'https' : false;
@@ -89,26 +69,81 @@ class DomainCreator
             $aParams['ENV_VARS']['SYSTEM_ID'] = $iSystemId;
 
             $oVhost = new Vhost($sServerAdmin, $sDomain, $iPort, $sAdminDocumentRoot, $sLogDir, $bUseSSL, $sEnv, $aParams);
-
             $sDestination = self::makePath($this->getVhostConfigDir($sEnv), $sDomain) . '.conf';
             $this->console->log("Creatating vhost file " . $sDestination);
 
             file_put_contents($sDestination, $oVhost->getContents());
         }
+    }
+
+    /**
+     * @param $sDomain
+     * @return string[]
+     */
+    private function getEnvironmentOptions($sDomain): array
+    {
+// docs, svb, justitie
+        $sDomainBld = explode('.', $sDomain)[0];
+        $sTestDomain = str_replace($sDomainBld, $sDomainBld . '.test', $sDomain);
+        $aVhostConfigs = [
+            'dev' => ['domain' => 'admin.' . $sDomainBld . '.innovatieapp.nl'],
+            'test' => ['domain' => 'admin.' . $sTestDomain],
+            'prod' => ['domain' => 'admin.' . $sDomain],
+        ];
+        return $aVhostConfigs;
+    }
+
+    private function getVhostConfigDir(string $sEnv): string
+    {
+        $sVhostConfigDir = self::makePath($this->configuration->getVhostDir(), $sEnv);
+
+        if (!is_dir($sVhostConfigDir)) {
+            mkdir($sVhostConfigDir, 0777, true);
+        }
+        return $sVhostConfigDir;
+    }
+
+    static function makePath(...$aParts): string
+    {
+        return join(DIRECTORY_SEPARATOR, $aParts);
+    }
+
+    /**
+     * @param string $sLogDir
+     */
+    private function createMainApacheConfig(): void
+    {
+        $aContents = $this->makeMainApacheConfig();
+
+        $sServerConfigFilename = self::makePath($this->configuration->getVhostDir(), 'server.conf');
+
+        if (!file_exists($sServerConfigFilename)) {
+            file_put_contents($sServerConfigFilename, join(PHP_EOL, $aContents));
+        } else {
+            $this->console->log("Skip creation of <info>$sServerConfigFilename</info>, file exists");
+        }
+    }
+
+    /**
+     * @param string $sLogDir
+     * @return string[]
+     */
+    private function makeMainApacheConfig(): array
+    {
+        $sLogDir = $this->configuration->getLogDir();
 
         $sAbsoluteApacheDir = self::makePath(
-            Directory::getSystemRoot(),
-            $this->configuration->getAssetsDir(),
-            'server',
-            'http') . DIRECTORY_SEPARATOR;
+                Directory::getSystemRoot(),
+                $this->configuration->getAssetsDir(),
+                'server',
+                'http') . DIRECTORY_SEPARATOR;
 
         $sLogDirPath = $sLogDir . DIRECTORY_SEPARATOR;
         $sSep = DIRECTORY_SEPARATOR;
 
         $sDisableLiveEnvironments = '';
         $sDisableDevEnvironments = '#';
-        if(isset($_SERVER['IS_DEVEL']) || isset($_ENV['IS_DEVEL']))
-        {
+        if (isset($_SERVER['IS_DEVEL']) || isset($_ENV['IS_DEVEL'])) {
             $sDisableLiveEnvironments = '#';
             $sDisableDevEnvironments = '';
         }
@@ -147,9 +182,6 @@ class DomainCreator
             "",
             "",
         ];
-
-        $sServerConfigFilename = self::makePath($this->configuration->getVhostDir(), 'server.conf');
-
-        file_put_contents($sServerConfigFilename, join(PHP_EOL, $aContents));
+        return $aContents;
     }
 }
