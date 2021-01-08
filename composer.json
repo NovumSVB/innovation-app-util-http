@@ -23,7 +23,7 @@
 
         "composer/composer": "^2.0.8",
         "composer-plugin-api" : "*",
-        "hurah/hurah-installer" : "*"
+        "hurah/hurah-installer" : "^v1.0.6"
 
     },
     "extra": {
