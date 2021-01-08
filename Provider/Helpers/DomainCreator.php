@@ -8,9 +8,9 @@ use Hi\Helpers\DirectoryStructure;
 
 class DomainCreator
 {
-    private $console;
-    private $configuration;
-    private $packageName;
+    private Console $console;
+    private Configuration $configuration;
+    private string $packageName;
 
     function __construct(string $sPackageName, Console $console)
     {
@@ -27,7 +27,7 @@ class DomainCreator
     }
 
     /**
-     * @return string
+     * @return void
      */
     private function createDomainVhostConfig(): void
     {
@@ -85,12 +85,11 @@ class DomainCreator
 // docs, svb, justitie
         $sDomainBld = explode('.', $sDomain)[0];
         $sTestDomain = str_replace($sDomainBld, $sDomainBld . '.test', $sDomain);
-        $aVhostConfigs = [
+        return [
             'dev' => ['domain' => 'admin.' . $sDomainBld . '.innovatieapp.nl'],
             'test' => ['domain' => 'admin.' . $sTestDomain],
             'prod' => ['domain' => 'admin.' . $sDomain],
         ];
-        return $aVhostConfigs;
     }
 
     private function getVhostConfigDir(string $sEnv): string
@@ -109,7 +108,6 @@ class DomainCreator
     }
 
     /**
-     * @param string $sLogDir
      */
     private function createMainApacheConfig(): void
     {
@@ -125,7 +123,6 @@ class DomainCreator
     }
 
     /**
-     * @param string $sLogDir
      * @return string[]
      */
     private function makeMainApacheConfig(): array
@@ -148,7 +145,7 @@ class DomainCreator
             $sDisableDevEnvironments = '';
         }
 
-        $aContents = [
+        return [
             "# This configuration file loads the vhost configurations",
             "# It is auto generated but once generated it will not be overwritten",
             "# So you can adjust this file to your needs",
@@ -182,6 +179,5 @@ class DomainCreator
             "",
             "",
         ];
-        return $aContents;
     }
 }
